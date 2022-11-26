@@ -1,14 +1,18 @@
 package Objetos;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+
+import javax.security.auth.login.LoginContext;
 
 public class Pessoa {
     private int idConta;
     private String Nome;
     private String[] email;
-    private int quantityEamil;
+    private int quantityEmail;
     private String nomeUsuario;
     private String senha;
     private String cpf;
@@ -100,18 +104,53 @@ public class Pessoa {
         this.saldo = saldo;
     }
 
+    public String toString(){
+        return "\nNome Titular: " + Nome +
+            "\nEmail: " + email +
+            "\nCPF: " + cpf +
+            "Saldo: " + saldo;      
+    }
+
     public byte[] toByteArray() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
 
         dos.writeInt(idConta);
         dos.writeUTF(Nome);
-        dos.w
+        dos.writeInt(quantityEmail);
+
+        for (int i=0;i<quantityEmail;i++){
+            dos.writeUTF(email[i]);
+        }
+
+        dos.writeUTF(nomeUsuario);
+        dos.writeUTF(senha);
+        dos.writeUTF(cpf);
+        dos.writeUTF(cidade);
+        dos.writeInt(transRealizadas);
+        dos.writeDouble(saldo);
 
         return baos.toByteArray();
     }
 
-    
-    
+    public void fromByteArray(byte [] baos) throws IOException{
+        ByteArrayInputStream bais = new ByteArrayInputStream(baos);
+        DataInputStream dis = new DataInputStream(bais);
+
+        idConta=dis.readInt();
+        Nome=dis.readUTF();
+        quantityEmail=dis.readInt();
+
+        for (int i=0;i<quantityEmail;i++){
+            email[i]=dis.readUTF();
+        }
+
+        nomeUsuario=dis.readUTF();
+        senha=dis.readUTF();
+        cpf=dis.readUTF();
+        cidade=dis.readUTF();
+        transRealizadas=dis.readInt();
+        saldo=dis.readFloat();
+    }  
 
 }
